@@ -1,0 +1,42 @@
+﻿@model CrudApplication.Models.Auth.UserLoginModel
+@{
+    ViewData["Title"] = "Account Login";
+    Layout = null;
+}
+
+<style>
+    input {
+        padding: 5px;
+        border-radius: 5%;
+    }
+
+    .btnLogin {
+        text-decoration: none;
+        background-color: lightblue;
+        color: black;
+    }
+    span{
+        color:red;
+    }
+</style>
+<div>@Html.ValidationMessage("Error")</div>
+
+
+<form method="post" asp-action="Index" asp-controller="Authentication">
+    <label for="username">Username</label>
+    <input asp-for="Username" type="text" name="username"  placeholder="Enter username" />
+    <span asp-validation-for="Username"></span>
+
+    <br />
+    <br />
+    <label for="password">Password</label>
+    <input asp-for="Password" type="password" name="password" placeholder="Enter password" />
+    <br />
+    <br />
+    <label for="checkbox">Remember Me</label>
+    <input asp-for="RememberMe" type="checkbox" name="rememberme" />    
+    <br />
+    <br />
+    <input type="submit" value="Login" name="login-button"/>
+</form>
+
