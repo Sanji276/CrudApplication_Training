@@ -18,9 +18,15 @@
     span{
         color:red;
     }
+
 </style>
 <div>@Html.ValidationMessage("Error")</div>
-
+<div>
+    @if ((bool)ViewBag.sessionExpired)
+    {
+        <span>Your session has been expired! Please Login again!!!</span>
+    }
+</div>
 
 <form method="post" asp-action="Index" asp-controller="Authentication">
     <label for="username">Username</label>

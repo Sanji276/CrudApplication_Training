@@ -1,11 +1,9 @@
 ﻿using CrudApplication.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 using System.Diagnostics;
 
 namespace CrudApplication.Controllers
-{   
+{
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -15,9 +13,18 @@ namespace CrudApplication.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string isLogin,string Username,DateTime logedIntime)
         {
-            return View();
+            if(logedIntime < DateTime.Now)
+            {
+                return RedirectToAction("Index","Authentication",new { sessionExpired = true});
+            }
+            else
+            {
+                string newValue = isLogin;
+                ViewBag.userName = Username;
+                return View();
+            }            
         }
 
         public IActionResult Privacy()
