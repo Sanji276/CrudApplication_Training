@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace CrudApplication.Models.Auth
 {
@@ -9,9 +10,7 @@ namespace CrudApplication.Models.Auth
 
     public class UserLoginModel
     {
-        [Required(ErrorMessage = "Username field is required.")]
-        [MaxLength(10)]
-        [MinLength(5)]
+        [Required(ErrorMessage = "Username field is required.")]        
         public string? Username { get; set; }
         [Required]
         [DataType(DataType.Password)]
@@ -23,6 +22,7 @@ namespace CrudApplication.Models.Auth
     {
         public int Id { get; set; }
         [Required]
+        [DisplayName("User FirstName")]
         public string? FirstName { get; set; }
         [Required]
         public string? LastName { get; set; }

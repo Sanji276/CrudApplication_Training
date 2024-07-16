@@ -10,29 +10,31 @@ namespace CrudApplication.Controllers.Auth
 
         public AuthenticationController(IAuthenticationRepository authRepo)
         {
-           _authRepo = authRepo;
+            _authRepo = authRepo;
         }
-        public IActionResult Index(bool isLogin = false,bool sessionExpired = false)
+        public IActionResult Index(bool isLogin = false, bool sessionExpired = false)
         {
             ViewBag.sessionExpired = sessionExpired;
             return View();
         }
 
         [HttpPost]
-        public IActionResult Index(UserLoginModel model)
+        public async Task<IActionResult> Index(UserLoginModel model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if(model.Username == "Admin" && model.Password == "12345")
+                    if (await _authRepo.UserExist(model.Username!, model.Password!))
                     {
-                        return RedirectToAction("Index","Home",new {isLogin = true , Username = model.Username,logedInTime = DateTime.Now.AddSeconds(20)});
+                        return RedirectToAction("Index", "Home", new { isLogin = true, Username = model.Username, logedInTime = DateTime.Now.AddMinutes(20) });
                     }
-                }   
+
+                }
                 else
                 {
-                    ModelState.AddModelError("Error","Invalid Credentials");
+                    ViewBag.sessionExpired = true;
+                    ModelState.AddModelError("Error", "Invalid Credentials");
                     return View(model);
                 }
             }
@@ -58,13 +60,13 @@ namespace CrudApplication.Controllers.Auth
                 if (ModelState.IsValid)
                 {
                     var response = await _authRepo.AddUser(model);
-                    if(response > 0)
+                    if (response > 0)
                     {
-                        return RedirectToAction("Index", "Authentication", new {UserCreated = true });
+                        return RedirectToAction("Index", "Authentication", new { UserCreated = true });
                     }
                     else
                     {
-                        ModelState.AddModelError("Error","Something went wrong!!");
+                        ModelState.AddModelError("Error", "Something went wrong!!");
                         return View();
                     }
                 }
@@ -76,6 +78,22 @@ namespace CrudApplication.Controllers.Auth
 
                 throw;
             }
+        }
+
+        public async Task<IActionResult> UserList()
+        {
+            return View(await _authRepo.UserList());
+        }
+
+        public async Task<IActionResult> EditUser(int id)
+        {
+            return View(await _authRepo.GetUserDetailById(id));
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditUser(UserSignupModel model, int id)
+        {
+            await _authRepo.UpdateUser(model, id);
+            return RedirectToAction("UserList", "Authentication");
         }
     }
 }
