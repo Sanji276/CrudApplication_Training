@@ -1,7 +1,18 @@
+using CrudApplication.Database;
+using CrudApplication.Repository.Auth;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<CrudApplicationDbContext>(
+    options => options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DatabaseConnection")
+        ));
+
+builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
 
 var app = builder.Build();
 
